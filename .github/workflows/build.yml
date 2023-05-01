@@ -1,0 +1,20 @@
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+name: CI
+jobs:
+  flatpak:
+    name: "Flatpak"
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-44
+      options: --privileged
+    steps:
+    - uses: actions/checkout@v3
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.1
+      with:
+        bundle: hmcl.flatpak
+        manifest-path: org.jackhuang.hmcl.yml
+        verbose: true
