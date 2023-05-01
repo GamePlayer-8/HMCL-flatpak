@@ -17,4 +17,5 @@ jobs:
       with:
         bundle: hmcl.flatpak
         manifest-path: org.jackhuang.hmcl.yml
+        repository-url: https://flathub.org/repo/flathub.flatpakrepo
         verbose: true
