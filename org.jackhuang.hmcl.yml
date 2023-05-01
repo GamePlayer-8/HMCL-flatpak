@@ -1,6 +1,6 @@
 id: org.jackhuang.hmcl
 runtime: org.freedesktop.Platform
-runtime-version: '21.08'
+runtime-version: '22.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk17
@@ -20,7 +20,7 @@ finish-args:
 
 add-extensions:
   org.freedesktop.Sdk.Extension.openjdk8:
-    version: '21.08'
+    version: '22.08'
     directory: jdk-8 # this is relative to /app
     no-autodownload: true
 
