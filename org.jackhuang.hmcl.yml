@@ -22,7 +22,7 @@ add-extensions:
   org.freedesktop.Sdk.Extension.openjdk8:
     version: '22.08'
     directory: jdk-8 # this is relative to /app
-    no-autodownload: true
+    no-autodownload: false
 
 modules:
   - name: flite
