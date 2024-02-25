@@ -1,6 +1,6 @@
 id: org.jackhuang.hmcl
 runtime: org.freedesktop.Platform
-runtime-version: '22.08'
+runtime-version: '23.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk17
@@ -20,7 +20,7 @@ finish-args:
 
 add-extensions:
   org.freedesktop.Sdk.Extension.openjdk8:
-    version: '22.08'
+    version: '23.08'
     directory: jdk-8 # this is relative to /app
     no-autodownload: false
 
@@ -82,13 +82,8 @@ modules:
     sources:
       - type: file
         dest-filename: HMCL.jar 
-        url: http://ci.huangyuhui.net/job/HMCL/209/artifact/HMCL/build/libs/HMCL-3.4.209.jar
-        sha256: 97aeedb1a4a3ba78ede7423122eca185179df4a85f529e419f7d9c619bf2e1fc
-        x-checker-data: 
-          type: json
-          url: 'https://ci.huangyuhui.net/job/HMCL/lastSuccessfulBuild/api/json?pretty=true'
-          version-query: .artifacts[0].fileName | gsub("^HMCL-|.exe"; "")
-          url-query: .url + "artifact/" + (.artifacts[] | select(.fileName=="HMCL-" + $version + ".jar") | .relativePath)
+        url: https://github.com/HMCL-dev/HMCL/releases/download/v3.5.5.236/HMCL-3.5.5.236.jar
+        sha256: f11a7f9f9eaf49349ca4a11ea268f63eb0ef319a1ccf5e582ba9981f2c2a59c1
 
       - type: file
         path: HMCL.desktop
