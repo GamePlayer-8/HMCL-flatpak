@@ -13,7 +13,6 @@ Priority: optional
 Standards-Version: 3.9.2
 
 Package: ca-certificates
-Provides: ca-certificates-java
 Version: 1:20250419
 Maintainer: Dummy Package <dummy@example.com>
 Architecture: all
@@ -22,5 +21,22 @@ Description: Dummy ca-certificates package to satisfy dependencies
 EOF
 	equivs-build ca-certificates-dummy
 	dpkg -i ca-certificates*.deb
+
+	rm -rf *
+
+	cat > ca-certificates-java-dummy << 'EOF'
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: ca-certificates-java
+Version: 1:20250419
+Maintainer: Dummy Package <dummy@example.com>
+Architecture: all
+Description: Dummy ca-certificates-java package to satisfy dependencies
+ This is a dummy package to mark ca-certificates-java as installed.
+EOF
+	equivs-build ca-certificates-java-dummy
+	dpkg -i ca-certificates-java*.deb
 	cd -
 fi
