@@ -8,7 +8,7 @@ BUILD_RUNTIME="${BUILD_RUNTIME:-/tmp}"
 
 build_dir="${BUILD_RUNTIME}/build"
 
-cp -r /source "$build_dir"
+cp -r "$SCRIPT_PATH" "$build_dir"
 
 cd "$build_dir"
 
