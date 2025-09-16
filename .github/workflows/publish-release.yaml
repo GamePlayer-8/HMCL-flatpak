@@ -106,7 +106,7 @@ jobs:
           fetch-depth: '0'
           fetch-tags: 'true'
           lfs: 'true'
-          submodules: 'true'
+          submodules: 'false'
           set-safe-directory: 'true'
 
       - name: Download Flatpak
