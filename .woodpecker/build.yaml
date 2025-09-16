@@ -16,11 +16,11 @@ steps:
     commands:
       - apt-get update
       - if [ "${CI_FORGE_URL#https://}" = "forgejo.xvm" ]; then
-          mkdir -p /var/lib/dpkg/info/
-          touch /var/lib/dpkg/info/ca-certificates.list
-          touch /var/lib/dpkg/info/ca-certificates-java.list
-          dpkg --set-selections <<< "ca-certificates install"
-          dpkg --set-selections <<< "ca-certificates-java install"
+          mkdir -p /var/lib/dpkg/info/;
+          touch /var/lib/dpkg/info/ca-certificates.list;
+          touch /var/lib/dpkg/info/ca-certificates-java.list;
+          dpkg --set-selections <<< "ca-certificates install";
+          dpkg --set-selections <<< "ca-certificates-java install";
         fi # Workaround for shared certificates for forgejo.xvm domain
       - apt-get install -y build-essential git sudo default-jre default-jdk
       - cd HMCL_offline
