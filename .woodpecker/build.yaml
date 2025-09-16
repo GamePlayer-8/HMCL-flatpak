@@ -8,7 +8,7 @@
 
 when:
   branch: [main]
-  event: [push, manual]
+  event: [push, tag, manual]
 
 steps:
   gradle:
