@@ -39,7 +39,7 @@ jobs:
           retain_days: 7
           keep_minimum_runs: 6
 
-      - name: Install git
+      - name: Install git & sed
         run: |
           sudo apt-get update
           sudo apt-get install -y git git-lfs sed
