@@ -1,0 +1,93 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: Publish Nightly
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      target:
+        required: true
+        type: string
+
+env:
+  DEBIAN_FRONTEND: 'noninteractive'
+  TZ: Etc/UTC
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 28666
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 7
+          keep_minimum_runs: 6
+
+      - name: Install git
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git git-lfs
+          sudo apt-get autopurge -y
+          sudo apt-get clean
+
+      - name: Checkout branch
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          ref: ${{ inputs.target }}
+          fetch-depth: '0'
+          fetch-tags: 'true'
+          lfs: 'true'
+          submodules: 'true'
+          set-safe-directory: 'true'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run docker compose
+        run: |
+            /bin/sh build.sh
+
+      - name: Upload Flatpak
+        uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4.3.6
+        with:
+          name: flatpak
+          path: build/hmcl.flatpak
+
+  publish:
+    runs-on: ubuntu-24.04
+    needs: [build]
+
+    steps:
+      - name: Download Flatpak
+        uses: actions/download-artifact@v4
+        with:
+          name: flatpak
+          path: .
+
+      - name: Publish release
+        uses: notpeelz/action-gh-create-release@v5.0.1
+        with:
+          target: ${{ inputs.target }}
+          tag: nightly
+          prerelease: true
+          strategy: replace
+          title: "Automatic build"
+          body: "Automatic build"
+          files: |
+            hmcl.flatpak

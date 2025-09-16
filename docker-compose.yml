@@ -1,0 +1,17 @@
+name: runtime-gameplayer-8
+services:
+  runtime-gameplayer-8:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    volumes:
+      - .:/source
+      - ./build:/dist
+    restart: "no"
+    command: ["/bin/sh", "-c", "/source/runtime.sh /tmp ${VERSION}"]
+    deploy:
+      resources:
+        limits:
+          cpus: "${NPROC_CPUS}"
+          

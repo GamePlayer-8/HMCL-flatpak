@@ -1,6 +1,6 @@
 id: org.jackhuang.hmcl
 runtime: org.freedesktop.Platform
-runtime-version: '22.08'
+runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk17
@@ -20,29 +20,29 @@ finish-args:
 
 add-extensions:
   org.freedesktop.Sdk.Extension.openjdk8:
-    version: '22.08'
+    version: '24.08'
     directory: jdk-8 # this is relative to /app
     no-autodownload: false
 
 modules:
-  - name: flite
-    config-opts:
-      - --enable-shared
-      - --with-audio=alsa
-      - --with-vox=cmu_us_kal16
-    cleanup:
-      - "*.a"
-      - "/include"
-      - "/share"
-    sources:
-      - type: git
-        url: https://github.com/festvox/flite.git
-        tag: v2.2
-        commit: e9e2e37c329dbe98bfeb27a1828ef9a71fa84f88
-        x-checker-data:
-          type: git
-          tag-pattern: "^v([\\d.]+)$"
-
+#  - name: flite
+#    config-opts:
+#      - --enable-shared
+#      - --with-audio=alsa
+#      - --with-vox=cmu_us_kal16
+#    cleanup:
+#      - "*.a"
+#      - "/include"
+#      - "/share"
+#    sources:
+#      - type: git
+#        url: https://github.com/festvox/flite.git
+#        tag: v2.2
+#        commit: e9e2e37c329dbe98bfeb27a1828ef9a71fa84f88
+#        x-checker-data:
+#          type: git
+#          tag-pattern: "^v([\\d.]+)$"
+#
   - name: xrandr
     sources:
       - type: archive
@@ -54,10 +54,10 @@ modules:
     build-commands:
       - mkdir -p /app/jdk-8
       - ln -s jdk-8/jvm/java-8-openjdk /app/jre-8
-      - . /usr/lib/sdk/openjdk17/enable.sh && 
-        jlink --strip-debug --no-header-files --no-man-pages --compress=1  
-          --module-path $JAVA_HOME/jmods:. 
-          --add-modules ALL-MODULE-PATH --output 
+      - . /usr/lib/sdk/openjdk17/enable.sh &&
+        jlink --strip-debug --no-header-files --no-man-pages --compress=1
+          --module-path $JAVA_HOME/jmods:.
+          --add-modules ALL-MODULE-PATH --output
           /app/jre
     sources:
       - type: archive
@@ -81,9 +81,7 @@ modules:
       - install -Dm644 HMCL.appdata.xml -t /app/share/metainfo
     sources:
       - type: file
-        dest-filename: HMCL.jar 
-        url: https://github.com/HMCL-dev/HMCL/releases/download/v3.5.5.236/HMCL-3.5.5.236.jar
-        sha256: f11a7f9f9eaf49349ca4a11ea268f63eb0ef319a1ccf5e582ba9981f2c2a59c1
+        path: HMCL.jar
 
       - type: file
         path: HMCL.desktop

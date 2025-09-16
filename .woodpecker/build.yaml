@@ -1,0 +1,59 @@
+# Build and publish Docker images for multiple architectures.
+#
+# Pushing an image to codeberg's container registry
+# The package owner will be the repo owner.
+#
+# This config also shows usage of yaml aliases and
+# was taken from https://codeberg.org/6543/docker-images/src/commit/37e29c227717c1c07d2776cddcf14725bf952875/.woodpecker/hello.yml
+
+when:
+  branch: [main]
+  event: [push, manual]
+
+steps:
+  gradle:
+    image: debian:13-slim
+    commands:
+      - apt-get update
+      - if [ "${CI_FORGE_URL#https://}" = "forgejo.xvm" ]; then apt-mark hold ca-certificates; fi # Workaround for shared certificates for forgejo.xvm domain
+      - apt-get install -y build-essential git sudo default-jre default-jdk
+      - cd HMCL_offline
+      - ./gradlew
+      - cd ..
+      - cp HMCL_offline/HMCL/build/libs/HMCL*.jar ./HMCL.jar
+
+    environment:
+      DEBIAN_FRONTEND: 'noninteractive'
+
+  build:
+    privileged: true
+    image: alpine:3.20
+    commands:
+      - apk add --no-cache flatpak flatpak-builder
+          appstream-compose
+          git git-lfs
+          curl wget sudo
+          xz bc
+          flex bash man-db
+          man-pages file shadow
+          gawk diffutils findutils
+      - git config --global --add protocol.file.allow always
+      - flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+      - mkdir /dist
+      - sh runtime.sh
+      - cp /dist build -r
+
+  publish:
+    image: alpine:3.22
+    commands:
+      - apk add --no-cache curl
+      - cd build
+      - sha256sum hmcl.flatpak > sha256sum.txt
+      - curl -L --user "${CI_REPO_OWNER}:$OCI_TOKEN" -X DELETE "${CI_FORGE_URL}/api/packages/${CI_REPO_OWNER}/generic/${CI_REPO_NAME}/${CI_COMMIT_TAG:-${CI_COMMIT_SHA}}/hmcl.flatpak" || true
+      - curl -L --user "${CI_REPO_OWNER}:$OCI_TOKEN" --upload-file "hmcl.flatpak" "${CI_FORGE_URL}/api/packages/${CI_REPO_OWNER}/generic/${CI_REPO_NAME}/${CI_COMMIT_TAG:-${CI_COMMIT_SHA}}/hmcl.flatpak"
+      - curl -L --user "${CI_REPO_OWNER}:$OCI_TOKEN" -X DELETE "${CI_FORGE_URL}/api/packages/${CI_REPO_OWNER}/generic/${CI_REPO_NAME}/${CI_COMMIT_TAG:-${CI_COMMIT_SHA}}/sha256sum.txt" || true
+      - curl -L --user "${CI_REPO_OWNER}:$OCI_TOKEN" --upload-file "sha256sum.txt" "${CI_FORGE_URL}/api/packages/${CI_REPO_OWNER}/generic/${CI_REPO_NAME}/${CI_COMMIT_TAG:-${CI_COMMIT_SHA}}/sha256sum.txt"
+
+    environment:
+      OCI_TOKEN:
+        from_secret: OCI_TOKEN

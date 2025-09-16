@@ -1,0 +1,3 @@
+[submodule "HMCL_offline"]
+	path = HMCL_offline
+	url = https://git.chimmie.k.vu/GamePlayer-8/HMCL_offline
